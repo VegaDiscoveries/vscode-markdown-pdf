@@ -1,6 +1,5 @@
-Copyright (c) yzane
-
-All rights reserved. 
+Copyright (c) 2026 Vega Discoveries LLC (Richard Hancock) — modifications and extensions
+Copyright (c) yzane — original work
 
 MIT License
 

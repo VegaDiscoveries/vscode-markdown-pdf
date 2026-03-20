@@ -1,6 +1,9 @@
 # Markdown PDF
 
-This extension converts Markdown files to pdf, html, png or jpeg files.
+This extension converts Markdown files to pdf, html, png or jpeg files. Stores PDF's in MD-to-PDF relative path to the original md file. ... ...
+
+> **Maintained by [Vega Discoveries LLC](https://github.com/VegaDiscoveries)** — Richard Hancock, Programmer/Developer
+> Forked from [yzane/vscode-markdown-pdf](https://github.com/yzane/vscode-markdown-pdf)
 
 [Japanese README](README.ja.md)
 
@@ -407,15 +410,16 @@ If the download is not successful or you want to avoid downloading every time yo
   - Enables header and footer display
   - boolean. Default: true
   - Activating this option will display both the header and footer
-  - If you wish to display only one of them, remove the value for the other
-  - To hide the header
+  - If you wish to display only one of them, set the other to a blank placeholder
+  - To hide the header (keep the footer visible)
     ```javascript
-    "markdown-pdf.headerTemplate": "",
+    "markdown-pdf.headerTemplate": "<div></div>",
     ```
-  - To hide the footer
+  - To hide the footer (keep the header visible)
     ```javascript
-    "markdown-pdf.footerTemplate": "",
+    "markdown-pdf.footerTemplate": "<div></div>",
     ```
+  - **Note:** Setting `headerTemplate` or `footerTemplate` to an empty string `""` will cause Puppeteer to fall back to its own built-in default template. Use `"<div></div>"` to render a blank area instead.
 
 #### `markdown-pdf.headerTemplate`
   - Specifies the HTML template for outputting the header
@@ -612,6 +616,15 @@ Please use the following to insert a page break.
 
 ## [Release Notes](CHANGELOG.md)
 
+### 1.6.0 (2026/03/20)
+* Update: Publisher changed to Vega Discoveries LLC
+* Fix: Removed contradictory "All rights reserved" from LICENSE.txt
+* Update: Attribution headers added to README.md and README.ja.md
+* Update: Repository URL updated to VegaDiscoveries GitHub
+
+### 1.5.1 (2026/03/19)
+* Fix: Empty string workspace `outputDirectory` setting now correctly falls back to user-level setting instead of overriding it.
+
 ### 1.5.0 (2023/09/08)
 * Improve: The default date format for headers and footers has been changed to the ISO-based format (YYYY-MM-DD).
   * Support different date formats in templates [#197](https://github.com/yzane/vscode-markdown-pdf/pull/197)
@@ -624,6 +637,12 @@ Please use the following to insert a page break.
 ## License
 
 MIT
+
+Copyright (c) 2026 [Vega Discoveries LLC](https://github.com/VegaDiscoveries) (Richard Hancock) — modifications and extensions
+
+Copyright (c) [yzane](https://github.com/yzane) — original work
+
+See [LICENSE.txt](LICENSE.txt) for full license text.
 
 
 ## Special thanks

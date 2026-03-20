@@ -568,7 +568,16 @@ function getOutputDir(filename, resource) {
     if (resource === undefined) {
       return filename;
     }
-    var outputDirectory = vscode.workspace.getConfiguration('markdown-pdf')['outputDirectory'] || '';
+
+    // Use inspect() to find the first non-empty value across scopes (workspaceFolder > workspace > user),
+    // so that an explicitly-cleared workspace setting ("") falls back to the user-level value.
+    var inspected = vscode.workspace.getConfiguration('markdown-pdf', resource).inspect('outputDirectory');
+    var outputDirectory = [
+      inspected.workspaceFolderValue,
+      inspected.workspaceValue,
+      inspected.globalValue
+    ].find(function(v) { return v !== undefined && v !== ''; }) || '';
+
     if (outputDirectory.length === 0) {
       return filename;
     }
@@ -591,7 +600,7 @@ function getOutputDir(filename, resource) {
     }
 
     // Use a workspace relative path if there is a workspace and markdown-pdf.outputDirectoryRootPath = workspace
-    var outputDirectoryRelativePathFile = vscode.workspace.getConfiguration('markdown-pdf')['outputDirectoryRelativePathFile'];
+    var outputDirectoryRelativePathFile = vscode.workspace.getConfiguration('markdown-pdf', resource)['outputDirectoryRelativePathFile'];
     let root = vscode.workspace.getWorkspaceFolder(resource);
     if (outputDirectoryRelativePathFile === false && root) {
       outputDir = path.join(root.uri.fsPath, outputDirectory);

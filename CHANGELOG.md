@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.6.0 (2026/03/20)
+* Update: Publisher changed to Vega Discoveries LLC
+* Fix: Removed contradictory "All rights reserved" from LICENSE.txt
+* Update: Attribution headers added to README.md and README.ja.md
+* Update: Repository URL updated to VegaDiscoveries GitHub
+
+## 1.5.1 (2026/03/19)
+* Fix: Empty string workspace `outputDirectory` setting now correctly falls back to user-level setting instead of overriding it.
+
 ## 1.5.0 (2023/09/08)
 * Improve: The default date format for headers and footers has been changed to the ISO-based format (YYYY-MM-DD).
   * Support different date formats in templates [#197](https://github.com/yzane/vscode-markdown-pdf/pull/197)
