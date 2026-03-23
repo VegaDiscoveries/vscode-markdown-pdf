@@ -1,6 +1,6 @@
 'use strict';
 
-const rimraf = require('rimraf')
+const rimraf = require('rimraf');
 
 // const assert = require('assert');
 const before = require('mocha').before;
@@ -17,7 +17,7 @@ suite('Extension Test Suite', () => {
     });
 
     test('Mermaid', async function() {
-        this.timeout(6000000);
+        this.timeout(120000);
         var textDocument = await vscode.workspace.openTextDocument(path.resolve(__dirname, 'mermaid.md'));
         await vscode.window.showTextDocument(textDocument);
         await vscode.commands.executeCommand('extension.markdown-pdf.all');

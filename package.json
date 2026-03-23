@@ -2,7 +2,7 @@
   "name": "markdown-pdf",
   "displayName": "Markdown PDF",
   "description": "Convert Markdown to PDF",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "publisher": "VegaDiscoveries",
   "icon": "images/icon.png",
   "engines": {
@@ -31,7 +31,8 @@
     "onCommand:extension.markdown-pdf.png",
     "onCommand:extension.markdown-pdf.jpeg",
     "onCommand:extension.markdown-pdf.all",
-    "onLanguage:markdown"
+    "onLanguage:markdown",
+    "onStartupFinished"
   ],
   "main": "./extension",
   "contributes": {

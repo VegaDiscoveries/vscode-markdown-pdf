@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.7.0 (2026/03/23)
+* Fix: `copilot-instructions.md` and `*.instructions.md` files are now converted on save. VS Code's Copilot extension assigns these files a non-markdown language ID, which previously caused the on-save handler to skip them silently.
+* Add: New `isInstructionFile()` helper detects instruction files by filename pattern.
+* Add: New `markdownPdfFromInstructionFile()` handler writes a dated copy (`<name>_YYYYMMDD.md`) to act as the conversion source, runs the standard conversion pipeline against it, then deletes the temporary copy — leaving only the converted output file.
+* Add: `onStartupFinished` activation event added so the extension activates even when only an instruction file is open (previously required a standard markdown file to trigger activation).
+* Update: `onDidSaveTextDocument` callback now passes the saved `document` to `markdownPdfOnSave()` to support file-specific routing.
+
 ## 1.6.0 (2026/03/20)
 * Update: Publisher changed to Vega Discoveries LLC
 * Fix: Removed contradictory "All rights reserved" from LICENSE.txt

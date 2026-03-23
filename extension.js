@@ -23,7 +23,7 @@ function activate(context) {
 
   var isConvertOnSave = vscode.workspace.getConfiguration('markdown-pdf')['convertOnSave'];
   if (isConvertOnSave) {
-    var disposable_onsave = vscode.workspace.onDidSaveTextDocument(function () { markdownPdfOnSave(); });
+    var disposable_onsave = vscode.workspace.onDidSaveTextDocument(function (document) { markdownPdfOnSave(document); });
     context.subscriptions.push(disposable_onsave);
   }
 }
@@ -107,9 +107,19 @@ async function markdownPdf(option_type) {
   }
 }
 
-function markdownPdfOnSave() {
+function markdownPdfOnSave(document) {
   try {
+    // Instruction files (.github/copilot-instructions.md, *.instructions.md) are assigned
+    // a non-markdown language ID by VS Code's Copilot extension, which causes the languageId
+    // check below to skip them. Handle them separately via a dated-copy workaround.
+    if (document && isInstructionFile(document.fileName)) {
+      markdownPdfFromInstructionFile(document);
+      return;
+    }
     var editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
     var mode = editor.document.languageId;
     if (mode != 'markdown') {
       return;
@@ -119,6 +129,52 @@ function markdownPdfOnSave() {
     }
   } catch (error) {
     showErrorMessage('markdownPdfOnSave()', error);
+  }
+}
+
+function isInstructionFile(filename) {
+  var basename = path.basename(filename);
+  return basename === 'copilot-instructions.md' || basename.endsWith('.instructions.md');
+}
+
+async function markdownPdfFromInstructionFile(document) {
+  try {
+    var srcPath = document.fileName;
+    var dir = path.dirname(srcPath);
+    var baseName = path.basename(srcPath, '.md');
+    var now = new Date();
+    var dateStamp = now.getFullYear().toString()
+      + ('0' + (now.getMonth() + 1)).slice(-2)
+      + ('0' + now.getDate()).slice(-2);
+    var copyPath = path.join(dir, baseName + '_' + dateStamp + '.md');
+
+    // Write a plain .md copy so conversion functions see a standard markdown file path
+    var text = document.getText();
+    fs.writeFileSync(copyPath, text, 'utf-8');
+
+    try {
+      var copyUri = vscode.Uri.file(copyPath);
+      var ext = path.extname(copyPath);
+      var types_tmp = vscode.workspace.getConfiguration('markdown-pdf')['type'] || 'pdf';
+      var types = Array.isArray(types_tmp) ? types_tmp : [types_tmp];
+      var types_format = ['html', 'pdf', 'png', 'jpeg'];
+      for (var i = 0; i < types.length; i++) {
+        var type = types[i];
+        if (types_format.indexOf(type) >= 0) {
+          var outputFilename = copyPath.replace(ext, '.' + type);
+          var content = convertMarkdownToHtml(copyPath, type, text);
+          var html = makeHtml(content, copyUri);
+          await exportPdf(html, outputFilename, type, copyUri);
+        }
+      }
+    } finally {
+      // Remove the temporary .md copy — only the converted output file is kept
+      if (isExistsPath(copyPath)) {
+        deleteFile(copyPath);
+      }
+    }
+  } catch (error) {
+    showErrorMessage('markdownPdfFromInstructionFile()', error);
   }
 }
 

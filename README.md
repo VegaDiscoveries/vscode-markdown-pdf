@@ -616,6 +616,11 @@ Please use the following to insert a page break.
 
 ## [Release Notes](CHANGELOG.md)
 
+### 1.7.0 (2026/03/23)
+* Fix: `copilot-instructions.md` and `*.instructions.md` files are now converted on save.
+* Add: Instruction file detection routes saves through a dated-copy conversion pipeline.
+* Add: `onStartupFinished` activation event ensures the extension is active even when only an instruction file is open.
+
 ### 1.6.0 (2026/03/20)
 * Update: Publisher changed to Vega Discoveries LLC
 * Fix: Removed contradictory "All rights reserved" from LICENSE.txt
