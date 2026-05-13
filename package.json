@@ -2,7 +2,7 @@
   "name": "markdown-pdf",
   "displayName": "Markdown PDF",
   "description": "Convert Markdown to PDF",
-  "version": "1.7.0",
+  "version": "1.8.3",
   "publisher": "VegaDiscoveries",
   "icon": "images/icon.png",
   "engines": {
@@ -26,6 +26,7 @@
   },
   "activationEvents": [
     "onCommand:extension.markdown-pdf.settings",
+    "onCommand:extension.markdown-pdf.setup",
     "onCommand:extension.markdown-pdf.pdf",
     "onCommand:extension.markdown-pdf.html",
     "onCommand:extension.markdown-pdf.png",
@@ -40,6 +41,11 @@
       {
         "command": "extension.markdown-pdf.settings",
         "title": "Markdown PDF: Export (settings.json)",
+        "group": "markdown-pdf"
+      },
+      {
+        "command": "extension.markdown-pdf.setup",
+        "title": "Markdown PDF: Setup (configure default settings)",
         "group": "markdown-pdf"
       },
       {
@@ -70,6 +76,9 @@
     ],
     "menus": {
       "commandPalette": [
+        {
+          "command": "extension.markdown-pdf.setup"
+        },
         {
           "when": "resourceLangId == markdown",
           "command": "extension.markdown-pdf.settings"

@@ -1,5 +1,7 @@
 {
+    "markdown-pdf.convertOnSave": true,
     "markdown-pdf.outputDirectory": "MD-to-PDF",
+    "markdown-pdf.outputDirectoryRelativePathFile": true,
     "markdown-pdf.markdown-it-include.enable": false,
     "debug.node.autoAttach": "on",
     "markdown-pdf.headerTemplate": "<div></div>"

@@ -11,6 +11,7 @@ function activate(context) {
 
   var commands = [
     vscode.commands.registerCommand('extension.markdown-pdf.settings', async function () { await markdownPdf('settings'); }),
+    vscode.commands.registerCommand('extension.markdown-pdf.setup', async function () { await runSetupWizard(context); }),
     vscode.commands.registerCommand('extension.markdown-pdf.pdf', async function () { await markdownPdf('pdf'); }),
     vscode.commands.registerCommand('extension.markdown-pdf.html', async function () { await markdownPdf('html'); }),
     vscode.commands.registerCommand('extension.markdown-pdf.png', async function () { await markdownPdf('png'); }),
@@ -26,8 +27,60 @@ function activate(context) {
     var disposable_onsave = vscode.workspace.onDidSaveTextDocument(function (document) { markdownPdfOnSave(document); });
     context.subscriptions.push(disposable_onsave);
   }
+
+  // Run setup wizard on first install (no prior flag stored)
+  var hasSetup = context.globalState.get('markdown-pdf.setupComplete', false);
+  if (!hasSetup) {
+    runSetupWizard(context);
+  }
 }
 exports.activate = activate;
+
+async function runSetupWizard(context) {
+  // Q1: Convert on save
+  var convertOnSave = await vscode.window.showQuickPick(
+    [{ label: 'Yes', value: true }, { label: 'No', value: false }],
+    {
+      placeHolder: 'Convert Markdown to PDF automatically on every file save?',
+      ignoreFocusOut: true
+    }
+  );
+  if (convertOnSave === undefined) return; // user cancelled
+
+  // Q2: Output folder name
+  var outputDirectory = await vscode.window.showInputBox({
+    prompt: 'What folder should PDF files be saved in?',
+    value: vscode.workspace.getConfiguration('markdown-pdf').get('outputDirectory') || 'MD-to-PDF',
+    ignoreFocusOut: true
+  });
+  if (outputDirectory === undefined) return; // user cancelled
+
+  // Q3: Relative to MD file location
+  var relativePathFile = await vscode.window.showQuickPick(
+    [{ label: 'Yes', value: true }, { label: 'No', value: false }],
+    {
+      placeHolder: 'Should the save folder path be relative to the Markdown file\'s location?',
+      ignoreFocusOut: true
+    }
+  );
+  if (relativePathFile === undefined) return; // user cancelled
+
+  // Write all three to user (global) settings
+  var config = vscode.workspace.getConfiguration('markdown-pdf');
+  await config.update('convertOnSave', convertOnSave.value, vscode.ConfigurationTarget.Global);
+  await config.update('outputDirectory', outputDirectory, vscode.ConfigurationTarget.Global);
+  await config.update('outputDirectoryRelativePathFile', relativePathFile.value, vscode.ConfigurationTarget.Global);
+
+  // Mark setup as complete so first-run wizard doesn't repeat
+  await context.globalState.update('markdown-pdf.setupComplete', true);
+
+  vscode.window.showInformationMessage(
+    'Markdown PDF: Settings saved. ' +
+    'Convert on save: ' + (convertOnSave.value ? 'On' : 'Off') + ', ' +
+    'Output folder: "' + (outputDirectory || '(default)') + '", ' +
+    'Relative path: ' + (relativePathFile.value ? 'Yes' : 'No') + '.'
+  );
+}
 
 // this method is called when your extension is deactivated
 function deactivate() {
@@ -423,7 +476,15 @@ function exportHtml(data, filename) {
 function exportPdf(data, filename, type, uri) {
 
   if (!INSTALL_CHECK) {
-    return;
+    // Chromium may have finished installing since startup — re-check before giving up.
+    if (checkPuppeteerBinary()) {
+      INSTALL_CHECK = true;
+    } else {
+      showErrorMessage('Chromium is not available. ' +
+        'It may still be downloading (check the status bar), or the download failed. ' +
+        'See https://github.com/yzane/vscode-markdown-pdf#install');
+      return;
+    }
   }
   if (!checkPuppeteerBinary()) {
     showErrorMessage('Chromium or Chrome does not exist! \
@@ -868,7 +929,10 @@ function checkPuppeteerBinary() {
       return false;
     }
   } catch (error) {
-    showErrorMessage('checkPuppeteerBinary()', error);
+    // executablePath() throws on first install when Chromium is not yet present;
+    // this is normal — installChromium() will handle the download.
+    console.warn('checkPuppeteerBinary(): ' + error.message);
+    return false;
   }
 }
 
@@ -953,8 +1017,27 @@ function setBooleanValue(a, b) {
   }
 }
 
-function init() {
+async function autoConfigureMacChrome() {
+  if (process.platform !== 'darwin') {
+    return;
+  }
+  var executablePath = vscode.workspace.getConfiguration('markdown-pdf')['executablePath'] || '';
+  if (executablePath) {
+    return;
+  }
+  var chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  if (!isExistsPath(chromePath)) {
+    return;
+  }
+  var config = vscode.workspace.getConfiguration('markdown-pdf');
+  await config.update('executablePath', chromePath, vscode.ConfigurationTarget.Global);
+  var StatusbarMessageTimeout = vscode.workspace.getConfiguration('markdown-pdf')['StatusbarMessageTimeout'];
+  vscode.window.setStatusBarMessage('$(markdown) Markdown PDF: Chrome found and configured automatically.', StatusbarMessageTimeout);
+}
+
+async function init() {
   try {
+    await autoConfigureMacChrome();
     if (checkPuppeteerBinary()) {
       INSTALL_CHECK = true;
     } else {

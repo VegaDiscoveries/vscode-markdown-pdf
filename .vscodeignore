@@ -1,9 +1,11 @@
 .vscode/**
+.vs/**
 typings/**
 test/**
 .gitignore
 jsconfig.json
 *.vsix
+*.code-workspace
 work/**
 *.bat
 .eslintrc.json

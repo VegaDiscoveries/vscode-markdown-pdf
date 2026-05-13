@@ -130,15 +130,13 @@ OUTPUT
 
 ## Install
 
-Chromium download starts automatically when Markdown PDF is installed and Markdown file is first opened with Visual Studio Code.
+**macOS:** If Google Chrome is already installed, the extension detects it automatically on first launch and configures itself — no Chromium download required. A confirmation message appears in the status bar.
 
-However, it is time-consuming depending on the environment because of its large size (~ 170Mb Mac, ~ 282Mb Linux, ~ 280Mb Win).
-
-During downloading, the message `Installing Chromium` is displayed in the status bar.
+**Windows / Linux:** Chromium downloads automatically when the extension is installed and a Markdown file is first opened. This is time-consuming depending on the environment because of its large size (~170 MB Mac, ~282 MB Linux, ~280 MB Win). The message `Installing Chromium` is displayed in the status bar during the download.
 
 If you are behind a proxy, set the `http.proxy` option to settings.json and restart Visual Studio Code.
 
-If the download is not successful or you want to avoid downloading every time you upgrade Markdown PDF, please specify the installed [Chrome](https://www.google.co.jp/chrome/) or 'Chromium' with [markdown-pdf.executablePath](#markdown-pdfexecutablepath) option.
+If the download is not successful or you want to avoid downloading every time you upgrade Markdown PDF, specify the installed [Chrome](https://www.google.com/chrome/) or Chromium with the [markdown-pdf.executablePath](#markdown-pdfexecutablepath) option.
 
 <div class="page"/>
 
@@ -310,8 +308,9 @@ If the download is not successful or you want to avoid downloading every time yo
 
 ```javascript
 "markdown-pdf.styles": [
-  "C:\\Users\\<USERNAME>\\Documents\\markdown-pdf.css",
-  "/home/<USERNAME>/settings/markdown-pdf.css",
+  "C:\\Users\\<USERNAME>\\Documents\\markdown-pdf.css",  // Windows
+  "/Users/<USERNAME>/settings/markdown-pdf.css",         // macOS
+  "/home/<USERNAME>/settings/markdown-pdf.css",          // Linux
 ],
 ```
 
@@ -387,9 +386,14 @@ If the download is not successful or you want to avoid downloading every time yo
   - Path to a Chromium or Chrome executable to run instead of the bundled Chromium
   - All `\` need to be written as `\\` (Windows)
   - To apply the settings, you need to restart Visual Studio Code
+  - On macOS, Chrome is detected and configured automatically if installed — manual configuration is not normally required
 
 ```javascript
+// Windows
 "markdown-pdf.executablePath": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+
+// macOS
+"markdown-pdf.executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ```
 
 ### Common Options

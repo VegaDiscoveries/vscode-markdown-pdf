@@ -1,4 +1,23 @@
 # Change Log
+## 1.8.3 (2026/05/12)
+* Add: macOS auto-detection of Google Chrome on first launch — if Chrome is installed at the standard path, `markdown-pdf.executablePath` is configured automatically and no Chromium download occurs.
+* Update: README Install section updated to document macOS Chrome auto-detection vs Windows/Linux Chromium download behavior.
+* Update: README `markdown-pdf.executablePath` option now includes macOS Chrome path example.
+* Update: README `markdown-pdf.styles` absolute path example corrected to show all three platforms (Windows, macOS, Linux) with inline labels.
+
+## 1.8.2 (2026/03/30)
+* Add: First-run setup wizard automatically prompts for key default settings on fresh installs.
+  * Prompts: convert on save (Yes/No), output folder name, relative path mode (Yes/No).
+  * Writes answers directly to user (global) settings via `ConfigurationTarget.Global`.
+  * Uses `globalState` flag `markdown-pdf.setupComplete` to ensure the wizard only auto-runs once.
+* Add: New command `Markdown PDF: Setup (configure default settings)` — re-runs the wizard at any time from the Command Palette.
+* Update: Workspace default settings updated — `convertOnSave: true`, `outputDirectory: MD-to-PDF`, `outputDirectoryRelativePathFile: true`.
+## 1.8.1 (2026/03/30)
+* Fix: `checkPuppeteerBinary()` no longer shows a user-facing error on first install when Chromium is not yet present — this is expected during the download phase and is now silently logged to the console instead.
+* Fix: `exportPdf()` no longer silently drops a conversion request when `INSTALL_CHECK` is false. It now re-checks whether Chromium has finished installing, and if still unavailable shows a clear informational message with a help link.
+
+## 1.8.0 (2026/03/30)
+* Fix: Rebuilt VSIX with `node_modules` fully bundled to resolve `Cannot find module 'gray-matter'` error on fresh installs.
 
 ## 1.7.0 (2026/03/23)
 * Fix: `copilot-instructions.md` and `*.instructions.md` files are now converted on save. VS Code's Copilot extension assigns these files a non-markdown language ID, which previously caused the on-save handler to skip them silently.

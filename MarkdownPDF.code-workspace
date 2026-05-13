@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"markdown-pdf.convertOnSave": true,
+		"markdown-pdf.outputDirectory": "MD-to-PDF",
+		"markdown-pdf.outputDirectoryRelativePathFile": true,
+		"markdown-pdf.markdown-it-include.enable": false
+	}
+}
