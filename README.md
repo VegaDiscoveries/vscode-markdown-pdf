@@ -169,6 +169,10 @@ If the download is not successful or you want to avoid downloading every time yo
 
 ![usage2](images/usage2.gif)
 
+### Keyboard Shortcuts
+
+* `Ctrl+Alt+S` — Manual export to PDF with timestamp in filename (e.g., `document-2026-05-19-143022.pdf`). Independent of standard file save and `convertOnSave` setting.
+
 ### Auto convert
 
 1. Add `"markdown-pdf.convertOnSave": true` option to **settings.json**
@@ -619,6 +623,14 @@ Please use the following to insert a page break.
 
 
 ## [Release Notes](CHANGELOG.md)
+
+### 1.8.4 (2026/05/19)
+* Add: Keyboard shortcut `Ctrl+Alt+S` to export to PDF with timestamp in filename
+
+### 1.8.3 (2026/05/10)
+* Add: Setup wizard on first launch for Chromium/Chrome configuration
+* Improve: macOS automatic Chrome detection and configuration
+* Fix: Chromium executable path hardening and validation
 
 ### 1.7.0 (2026/03/23)
 * Fix: `copilot-instructions.md` and `*.instructions.md` files are now converted on save.
