@@ -2,7 +2,7 @@
   "name": "markdown-pdf",
   "displayName": "Markdown PDF",
   "description": "Convert Markdown to PDF",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "publisher": "VegaDiscoveries",
   "icon": "images/icon.png",
   "engines": {
@@ -72,6 +72,18 @@
         "command": "extension.markdown-pdf.all",
         "title": "Markdown PDF: Export (all: pdf, html, png, jpeg)",
         "group": "markdown-pdf"
+      },
+      {
+        "command": "extension.markdown-pdf.pdf-timestamped",
+        "title": "Markdown PDF: Export PDF (timestamped)",
+        "group": "markdown-pdf"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.markdown-pdf.pdf-timestamped",
+        "key": "ctrl+alt+s",
+        "when": "resourceLangId == markdown"
       }
     ],
     "menus": {

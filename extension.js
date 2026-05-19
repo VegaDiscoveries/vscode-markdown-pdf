@@ -16,7 +16,8 @@ function activate(context) {
     vscode.commands.registerCommand('extension.markdown-pdf.html', async function () { await markdownPdf('html'); }),
     vscode.commands.registerCommand('extension.markdown-pdf.png', async function () { await markdownPdf('png'); }),
     vscode.commands.registerCommand('extension.markdown-pdf.jpeg', async function () { await markdownPdf('jpeg'); }),
-    vscode.commands.registerCommand('extension.markdown-pdf.all', async function () { await markdownPdf('all'); })
+    vscode.commands.registerCommand('extension.markdown-pdf.all', async function () { await markdownPdf('all'); }),
+    vscode.commands.registerCommand('extension.markdown-pdf.pdf-timestamped', async function () { await markdownPdf('pdf', true); })
   ];
   commands.forEach(function (command) {
     context.subscriptions.push(command);
@@ -87,7 +88,7 @@ function deactivate() {
 }
 exports.deactivate = deactivate;
 
-async function markdownPdf(option_type) {
+async function markdownPdf(option_type, addTimestamp) {
 
   try {
 
@@ -142,6 +143,16 @@ async function markdownPdf(option_type) {
         var type = types[i];
         if (types_format.indexOf(type) >= 0) {
           filename = mdfilename.replace(ext, '.' + type);
+          if (addTimestamp) {
+            var now = new Date();
+            var timestamp = now.getFullYear().toString()
+              + ('0' + (now.getMonth() + 1)).slice(-2)
+              + ('0' + now.getDate()).slice(-2)
+              + ('0' + now.getHours()).slice(-2)
+              + ('0' + now.getMinutes()).slice(-2)
+              + ('0' + now.getSeconds()).slice(-2);
+            filename = mdfilename.replace(ext, '_' + timestamp + '.' + type);
+          }
           var text = editor.document.getText();
           var content = convertMarkdownToHtml(mdfilename, type, text);
           var html = makeHtml(content, uri);
